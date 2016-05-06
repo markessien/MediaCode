@@ -1,0 +1,169 @@
+// Media.odl : type library source for ActiveX Control project.
+
+// This file will be processed by the Make Type Library (mktyplib) tool to
+// produce the type library (Media.tlb) that will become a resource in
+// Media.ocx.
+
+#include <olectl.h>
+#include <idispids.h>
+
+[ uuid(8032C196-5A82-417C-910C-EA46BED00F78), version(1.0),
+  helpfile("Media.hlp"),
+  helpstring("Media ActiveX Control module"),
+  control ]
+library MEDIALib
+{
+	importlib(STDOLE_TLB);
+	importlib(STDTYPE_TLB);
+
+	typedef [uuid(190f4374-14a0-4285-8da2-2665d1dbf0ea),
+			helpstring("Video Window Scale Mode"), version(1.0)]
+
+	enum {
+		[helpstring("Normal as source video size")] Normal = 0,
+		[helpstring("Fit to maintain aspect ratio)")] Fit,
+		[helpstring("Stretch to fit window")] FitStretch
+	} WindowFitMode;
+
+	typedef [uuid(0e3e055d-bc12-43b9-aac7-b11bb308994b),
+			helpstring("Control Play State"), version(1.0)]
+
+	enum {
+		[helpstring("Media stopped")] Stopped = 0,
+		[helpstring("Media playing")] Playing,
+		[helpstring("Media paused")] Paused
+	} PlayStateMode;
+
+	typedef [uuid(7bb03921-2a2c-46bd-8df6-19695807fe11),
+			helpstring("Time Format Mode"), version(1.0)]
+
+	enum {
+		[helpstring("Unknown")] UnknownUnit = 0,
+		[helpstring("Unit in Millisecond")] Millisecond,
+		[helpstring("Unit in Video Frame")] Frame
+	} TimeFormatMode;
+
+	typedef [uuid(0f280ed0-c1d5-11d6-bdbc-0050ba84ec14),
+			helpstring("Media Type"), version(1.0)]
+
+	enum {
+		[helpstring("Unknown Media")] UnknownMedia = 0,
+		[helpstring("Audio-only Media")] Audio,
+		[helpstring("Audio/Video Media")] Video
+	} MediaTypeMode;
+
+	typedef enum
+	{
+		mediaErrorNoError = 0,
+		mediaErrorGeneric,
+		mediaErrorException,
+		mediaErrorOutOfMemory,
+		mediaErrorFileNotFound,
+		mediaErrorQTNotInstalled,
+		mediaErrorUnknownFileFormat,
+		mediaErrorInvalidParameter,
+		mediaErrorCreateGraphBuilderFailed,
+		mediaErrorEmptyMediaFile,
+		mediaErrorCreateTeeFilterFailed,
+		mediaErrorTeeFilterNotInserted,
+		mediaErrorSetAudioMediaType,
+		mediaErrorCreateVUMeterFilterFailed,
+		mediaErrorVUMeterNotInserted,
+		mediaErrorCDRomNotReady,
+		mediaErrorNoSoundCardInstalled,
+		mediaErrorGetSoundCardDetails,
+		mediaErrorGetMuteState,
+		mediaErrorSetMuteState,
+		mediaErrorGetVolume,
+		mediaErrorSetVolume
+	} MediaError;
+
+	//  Primary dispatch interface for CMediaCtrl
+
+	[ uuid(8AF7FBAC-88A5-4261-B5CC-805D3A48874C),
+	  helpstring("Dispatch interface for Media Control"), hidden ]
+	dispinterface _DMedia
+	{
+		properties:
+			// NOTE - ClassWizard will maintain property information here.
+			//    Use extreme caution when editing this section.
+			//{{AFX_ODL_PROP(CMediaCtrl)
+			[id(1), helpstring("Returns the player control state")] PlayStateMode PlayState;
+			[id(2), helpstring("Sets the fit mode of the video window.")] WindowFitMode DisplayMode;
+			[id(3), helpstring("Returns the position of the playback as long , and it will return the frames position if the media file support frames")] long MediaPositionLong;
+			[id(4), helpstring("Returns/sets the method that the control will handle the length of the media file, as milliseconds or frames")] TimeFormatMode TimeFormat;
+			[id(5), helpstring("Returns the current media type")] MediaTypeMode MediaType;
+			[id(6), helpstring("Returns the current media length")] long MediaLength;
+			[id(7), helpstring("Returns the current media volume")] long Volume;
+			[id(8), helpstring("Returns the current width of the video window in pixels")] long VideoWidth;
+			[id(9), helpstring("Returns the height of the the video window in pixels")] long VideoHeight;
+			[id(10), helpstring("Returns the Audio CD MCI device ID")] long MCIDevID;
+			[id(11), helpstring("Sets the muting of the audio to True or False")] boolean Mute;
+			[id(12), helpstring("Returns/sets the percentage of the media length to be used for fast-forward or rewind")] double AdvancePercent;
+			//}}AFX_ODL_PROP
+
+		methods:
+			// NOTE - ClassWizard will maintain method information here.
+			//    Use extreme caution when editing this section.
+			//{{AFX_ODL_METHOD(CMediaCtrl)
+			[id(13), helpstring("Sets the file to playback, and the arguments required to play the media file")] long MediaFile(BSTR PlaybackFile, VARIANT_BOOL LoopMe, [optional] VARIANT_BOOL PlayNow, [optional, defaultvalue(FALSE)] VARIANT_BOOL SeekToZeroAtTheEndOfPlayback);
+			[id(14), helpstring("Pauses the playback")] void PauseMedia();
+			[id(15), helpstring("Resumes the current playback")] void ResumeMedia();
+			[id(16), helpstring("Stops completely the current playback")] void StopMedia();
+			[id(17), helpstring("Returns the number of soundcards installed in the system")] long GetNumberOfSoundCardMixers();
+			[id(18), helpstring("Returns the presence of at least one sound card installed, if yes, then it returns True")] boolean HasASoundCardInstalled();
+			[id(19), helpstring("Sets the playback speed of media files")] double MediaSpeed(double Speed);
+			[id(20), helpstring("Changes the playback position of the media file")] void SeekTo(long SeekPosition);
+			[id(21), helpstring("Returns the control window handle")] long GetWindowHwnd();
+			[id(22), helpstring("Fast forward the playback")] void FastForward();
+			[id(23), helpstring("Restart the playback")] void Play();
+			[id(24), helpstring("Cleanup all opened resources")] void CloseMedia();
+			[id(25), helpstring("Resize the video window")] void Resize(long Width, long Height);
+			[id(26), helpstring("Check the DirectX version")] boolean CheckDXVersion();
+			[id(27), helpstring("Rewind the playback")] void Rewind();
+			//}}AFX_ODL_METHOD
+
+			[id(DISPID_ABOUTBOX)] void AboutBox();
+	};
+
+	//  Event dispatch interface for CMediaCtrl
+
+	[ uuid(983A604E-70AA-4A01-B3DF-D62491607C68),
+	  helpstring("Event interface for Media Control") ]
+	dispinterface _DMediaEvents
+	{
+		properties:
+			//  Event interface has no properties
+
+		methods:
+			// NOTE - ClassWizard will maintain event information here.
+			//    Use extreme caution when editing this section.
+			//{{AFX_ODL_EVENT(CMediaCtrl)
+			[id(DISPID_CLICK)] void Click();
+			[id(DISPID_DBLCLICK)] void DblClick();
+			[id(DISPID_MOUSEUP)] void MouseUp(short Button, short Shift, OLE_XPOS_PIXELS x, OLE_YPOS_PIXELS y);
+			[id(DISPID_MOUSEMOVE)] void MouseMove(short Button, short Shift, OLE_XPOS_PIXELS x, OLE_YPOS_PIXELS y);
+			[id(DISPID_ERROREVENT)] void Error(short Number, BSTR* Description, LONG Scode, BSTR Source, BSTR HelpFile, long HelpContext, VARIANT_BOOL *CancelDisplay);
+			[id(1), helpstring("Raised at the end of the playback , notice that this event will only be raised in the end of the playback of the entire media file , and not when loading another media or when stopped or paused")] void Finished();
+			[id(2), helpstring("Raised at the media file is loaded into memory")] void FileLoaded();
+			[id(3), helpstring("Raised when changes in the media poistion")] void MediaPosition(BSTR TimeLength, long Position);
+			[id(4), helpstring("Raised when changes in VU meter levels")] void VUPeakLevel(short nChannels, short leftMeter, short rightMeter);
+			[id(5), helpstring("Raised when changes in CD muting of volume control")] void CDMute(VARIANT_BOOL bMuteFlag);
+			[id(6), helpstring("Raised when changes in CD volume of volume control")] void CDVolume(long lVolume);
+			//}}AFX_ODL_EVENT
+	};
+
+	//  Class information for CMediaCtrl
+
+	[ uuid(81C410CF-F6B7-4B8A-88DD-BA3EE5CF8760),
+	  helpstring("Media Control"), control ]
+	coclass Media
+	{
+		[default] dispinterface _DMedia;
+		[default, source] dispinterface _DMediaEvents;
+	};
+
+
+	//{{AFX_APPEND_ODL}}
+	//}}AFX_APPEND_ODL}}
+};
